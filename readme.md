@@ -94,7 +94,7 @@ Instead of manually copying Compose files, you can configure Portainer to pull a
    - **Repository URL**:  
 
      ```bash
-     https://github.com/yourusername/portainer-compose-templates.git
+     https://github.com/DMDuFresne/Portainer-Templates.git
      ```
 
    - **Compose Path**:  
