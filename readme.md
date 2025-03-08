@@ -102,7 +102,7 @@ Instead of manually copying Compose files, you can configure Portainer to pull a
      Example:  
 
      ```bash
-     services/databases/mongodb/docker-compose.yml
+     Services/Databases/Document/mongodb/docker-compose.yml
      ```
 
 4. **Enable Automatic Sync (Optional)**
