@@ -1,0 +1,29 @@
+
+services:
+  hivemq-edge:
+    image: hivemq/hivemq-edge:${HIVEMQ_EDGE_TAG:-latest}
+    container_name: ${HIVEMQ_EDGE_CONTAINER_NAME:-hivemq-edge}
+    hostname: ${HIVEMQ_EDGE_HOSTNAME:-hivemq-edge}
+    ports:
+      - "${HIVEMQ_EDGE_MQTT_PORT:-1883}:1883"
+      - "${HIVEMQ_EDGE_UI_PORT:-8080}:8080"
+    restart: unless-stopped
+    environment:
+      HIVEMQ_LOG_LEVEL: ${HIVEMQ_LOG_LEVEL:-INFO}
+    volumes:
+      - hivemq-edge-logs:/opt/hivemq/log
+      - hivemq-edge-conf:/opt/hivemq/conf
+      - hivemq-edge-data:/opt/hivemq/data
+      - hivemq-edge-extensions:/opt/hivemq/extensions
+    networks:
+      - portainer-network
+
+volumes:
+  hivemq-edge-logs: {}
+  hivemq-edge-conf: {}
+  hivemq-edge-data: {}
+  hivemq-edge-extensions: {}
+
+networks:
+  portainer-network:
+    external: true

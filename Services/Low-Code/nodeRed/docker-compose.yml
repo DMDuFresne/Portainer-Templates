@@ -1,0 +1,20 @@
+
+services:
+  nodered:
+    image: nodered/node-red:${NODE_RED_TAG:-latest}
+    container_name: ${NODE_RED_CONTAINER_NAME:-nodered}
+    hostname: ${NODE_RED_HOSTNAME:-nodered}
+    ports:
+      - "${NODE_RED_PORT:-1880}:1880"
+    restart: unless-stopped
+    volumes:
+      - nodered-data:/data
+    networks:
+      - portainer-network
+
+volumes:
+  nodered-data: {}
+
+networks:
+  portainer-network:
+    external: true

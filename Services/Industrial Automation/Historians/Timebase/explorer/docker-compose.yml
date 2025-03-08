@@ -1,0 +1,22 @@
+
+services:
+  timebase-explorer:
+    image: timebase/explorer:${EXPLORER_TAG:-latest}
+    container_name: ${EXPLORER_CONTAINER_NAME:-timebase-explorer}
+    hostname: ${EXPLORER_HOSTNAME:-timebase-explorer}
+    ports:
+      - "${EXPLORER_PORT:-4531}:4531"
+    restart: unless-stopped
+    volumes:
+      - explorer-config:/timebase/config
+      - explorer-logs:/timebase/logs
+    networks:
+      - portainer-network
+
+volumes:
+  explorer-config: {}
+  explorer-logs: {}
+
+networks:
+  portainer-network:
+    external: true

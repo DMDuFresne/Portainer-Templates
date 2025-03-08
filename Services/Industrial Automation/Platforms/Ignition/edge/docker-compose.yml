@@ -1,0 +1,27 @@
+
+services:
+  ignition:
+    image: inductiveautomation/ignition:${IGNITION_TAG:-latest}
+    container_name: ${IGNITION_CONTAINER_NAME:-ignition-edge}
+    hostname: ${IGNITION_HOSTNAME:-ignition-edge}
+    ports:
+      - "${IGNITION_PORT:-8078}:8088"
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-America/Chicago}
+      ACCEPT_IGNITION_EULA: ${ACCEPT_IGNITION_EULA:-Y}
+      GATEWAY_ADMIN_USERNAME: ${GATEWAY_ADMIN_USERNAME:-admin}
+      GATEWAY_ADMIN_PASSWORD: ${GATEWAY_ADMIN_PASSWORD:-password}
+      IGNITION_EDITION: ${IGNITION_EDITION:-edge}
+      IGNITION_LICENSE_KEY: ${IGNITION_LICENSE_KEY:-}
+    volumes:
+      - ignition-edge-data:/var/lib/ignition
+    networks:
+      - portainer-network
+
+volumes:
+  ignition-edge-data: {}
+
+networks:
+  portainer-network:
+    external: true

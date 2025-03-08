@@ -1,0 +1,25 @@
+services:
+  n8n:
+    image: n8nio/n8n:${N8N_TAG:-latest}
+    container_name: ${N8N_CONTAINER_NAME:-n8n}
+    hostname: ${N8N_HOSTNAME:-n8n}
+    ports:
+      - "${N8N_PORT:-5678}:5678"
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-UTC}
+      N8N_BASIC_AUTH_ACTIVE: ${N8N_BASIC_AUTH_ACTIVE:-false}
+      N8N_BASIC_AUTH_USER: ${N8N_BASIC_AUTH_USER:-admin}
+      N8N_BASIC_AUTH_PASSWORD: ${N8N_BASIC_AUTH_PASSWORD:-password}
+      N8N_SECURE_COOKIE: ${N8N_SECURE_COOKIE:-false}
+    volumes:
+      - n8n-data:/home/node/.n8n
+    networks:
+      - portainer-network
+
+volumes:
+  n8n-data: {}
+
+networks:
+  portainer-network:
+    external: true

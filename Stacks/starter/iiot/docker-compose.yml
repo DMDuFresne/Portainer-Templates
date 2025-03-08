@@ -1,0 +1,137 @@
+
+services:
+
+  hivemq-edge:
+    image: hivemq/hivemq-edge:${HIVEMQ_EDGE_TAG:-latest}
+    container_name: iiot-edge-broker
+    hostname: broker
+    ports:
+      - "${HIVEMQ_EDGE_MQTT_PORT:-1883}:1883"
+      - "${HIVEMQ_EDGE_UI_PORT:-8080}:8080"
+    restart: unless-stopped
+    environment:
+      HIVEMQ_LOG_LEVEL: ${HIVEMQ_LOG_LEVEL:-INFO}
+    volumes:
+      - iiot-edge-hivemq-edge-logs:/opt/hivemq/log
+      - iiot-edge-hivemq-edge-conf:/opt/hivemq/conf
+      - iiot-edge-hivemq-edge-data:/opt/hivemq/data
+      - iiot-edge-hivemq-edge-extensions:/opt/hivemq/extensions
+    networks:
+      - iiot-edge-network
+
+  postgres:
+    image: postgres:${POSTGRES_TAG:-latest}
+    container_name: iiot-edge-postgres
+    hostname: postgres
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-db}
+    volumes:
+      - iiot-edge-postgres-data:/var/lib/postgresql/data
+    networks:
+      - iiot-edge-network
+
+  timebase-collector:
+    image: timebase/collector:${COLLECTOR_TAG:-latest}
+    container_name: iiot-edge-timebase-collector
+    hostname: timebase-collector
+    ports:
+      - "${COLLECTOR_PORT:-4521}:4521"
+    restart: unless-stopped
+    environment:
+      ACTIVE: ${COLLECTOR_ACTIVE:-false}
+    volumes:
+      - iiot-edge-collector-config:/timebase/config
+      - iiot-edge-collector-data:/timebase/data
+      - iiot-edge-collector-logs:/timebase/logs
+    networks:
+      - iiot-edge-network
+
+  timebase-historian:
+    image: timebase/historian:${HISTORIAN_TAG:-latest}
+    container_name: iiot-edge-timebase-historian
+    hostname: timebase-historian
+    ports:
+      - "${HISTORIAN_PORT:-4511}:4511"
+    restart: unless-stopped
+    volumes:
+      - iiot-edge-historian-data:/timebase/data
+      - iiot-edge-historian-logs:/timebase/logs
+    networks:
+      - iiot-edge-network
+
+  timebase-explorer:
+    image: timebase/explorer:${EXPLORER_TAG:-latest}
+    container_name: iiot-edge-timebase-explorer
+    hostname: timebase-explorer
+    ports:
+      - "${EXPLORER_PORT:-4531}:4531"
+    restart: unless-stopped
+    volumes:
+      - iiot-edge-explorer-config:/timebase/config
+      - iiot-edge-explorer-logs:/timebase/logs
+    networks:
+      - iiot-edge-network
+  
+  nodered:
+    image: nodered/node-red:${NODE_RED_TAG:-latest}
+    container_name: iiot-edge-nodered
+    hostname: nodered
+    ports:
+      - "${NODE_RED_PORT:-1880}:1880"
+    restart: unless-stopped
+    volumes:
+      - iiot-edge-nodered-data:/data
+    networks:
+      - iiot-edge-network
+
+  grafana:
+    image: grafana/grafana:${GRAFANA_TAG:-latest}
+    container_name: iiot-edge-grafana
+    hostname: grafana
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: ${GF_USERS_ALLOW_SIGN_UP:-false}
+    volumes:
+      - iiot-edge-grafana-data:/var/lib/grafana
+    networks:
+      - iiot-edge-network
+
+  appsmith:
+    image: index.docker.io/appsmith/appsmith-ee
+    container_name: iiot-edge-appsmith
+    hostname: appsmith
+    ports:
+      - "${APPSMITH_PORT:-8888}:80"
+    restart: unless-stopped
+    volumes:
+      - iiot-edge-appsmith-stacks:/appsmith-stacks
+    networks:
+      - iiot-edge-network
+
+volumes:
+  iiot-edge-hivemq-edge-logs: {}
+  iiot-edge-hivemq-edge-conf: {}
+  iiot-edge-hivemq-edge-data: {}
+  iiot-edge-hivemq-edge-extensions: {}
+  iiot-edge-postgres-data: {}
+  iiot-edge-collector-config: {}
+  iiot-edge-collector-data: {}
+  iiot-edge-collector-logs: {}
+  iiot-edge-historian-data: {}
+  iiot-edge-historian-logs: {}
+  iiot-edge-explorer-config: {}
+  iiot-edge-explorer-logs: {}
+  iiot-edge-nodered-data: {}
+  iiot-edge-grafana-data: {}
+  iiot-edge-appsmith-stacks: {}
+
+networks:
+  iiot-edge-network:

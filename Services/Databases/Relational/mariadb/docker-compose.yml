@@ -1,0 +1,25 @@
+
+services:
+  mariadb:
+    image: mariadb:${MARIADB_TAG:-latest}
+    container_name: ${MARIADB_CONTAINER_NAME:-mariadb}
+    hostname: ${MARIADB_HOSTNAME:-mariadb}
+    ports:
+      - "${MARIADB_PORT:-3306}:3306"
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-exampledb}
+      MYSQL_USER: ${MYSQL_USER:-user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    networks:
+      - portainer-network
+
+volumes:
+  mariadb-data: {}
+
+networks:
+  portainer-network:
+    external: true

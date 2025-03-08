@@ -1,0 +1,30 @@
+
+services:
+  packml-simulator:
+    image: ghcr.io/libremfg/packml-simulator:${PACKML_SIMULATOR_TAG:-latest}
+    container_name: ${PACKML_SIMULATOR_CONTAINER_NAME:-packml-simulator}
+    hostname: ${PACKML_SIMULATOR_HOSTNAME:-packml-simulator}
+    restart: unless-stopped
+    environment:
+      SITE: ${SITE:-Site}
+      AREA: ${AREA:-Area}
+      LINE: ${LINE:-Line}
+      MQTT_URL: ${MQTT_URL:-mqtt://broker.hivemq.com}
+      MQTT_PORT: ${MQTT_PORT:-1883}
+      MQTT_USERNAME: ${MQTT_USERNAME:-}
+      MQTT_PASSWORD: ${MQTT_PASSWORD:-}
+      MQTT_CLIENT_ID: ${MQTT_CLIENT_ID:-packml-simulator}
+      CLIENT_TYPE: ${CLIENT_TYPE:-mqtt}
+      SPARKPLUG_GROUP_ID: ${SPARKPLUG_GROUP_ID:-Site}
+      SPARKPLUG_EDGE_NODE: ${SPARKPLUG_EDGE_NODE:-Area_Line}
+      TICK: ${TICK:-1000}
+    deploy:
+      resources:
+        limits:
+          memory: 30M
+    networks:
+      - portainer-network
+
+networks:
+  portainer-network:
+    external: true

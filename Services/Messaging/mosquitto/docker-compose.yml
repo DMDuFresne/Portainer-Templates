@@ -1,0 +1,34 @@
+
+services:
+  mosquitto:
+    image: eclipse-mosquitto:${MOSQUITTO_TAG:-latest}
+    container_name: ${MOSQUITTO_CONTAINER_NAME:-broker}
+    hostname: ${MOSQUITTO_HOSTNAME:-broker}
+    ports:
+      - "${MOSQUITTO_MQTT_PORT:-1883}:1883"
+    restart: unless-stopped
+    command: |
+      sh -c "
+      echo 'listener 1883 0.0.0.0
+      allow_anonymous true
+      log_type error
+      log_type warning
+      log_type notice
+      log_type information
+      persistence true
+      persistence_location /mosquitto/data/' > /mosquitto/config/mosquitto.conf &&
+      mosquitto -c /mosquitto/config/mosquitto.conf
+      "
+    volumes:
+      - mosquitto-data:/mosquitto/data
+      - mosquitto-log:/mosquitto/log
+    networks:
+      - portainer-network
+
+volumes:
+  mosquitto-data: {}
+  mosquitto-log: {}
+
+networks:
+  portainer-network:
+    external: true

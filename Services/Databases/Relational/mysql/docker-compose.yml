@@ -1,0 +1,25 @@
+
+services:
+  mysql:
+    image: mysql:${MYSQL_TAG:-latest}
+    container_name: ${MYSQL_CONTAINER_NAME:-mysql}
+    hostname: ${MYSQL_HOSTNAME:-mysql}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-exampledb}
+      MYSQL_USER: ${MYSQL_USER:-user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - portainer-network
+
+volumes:
+  mysql-data: {}
+
+networks:
+  portainer-network:
+    external: true

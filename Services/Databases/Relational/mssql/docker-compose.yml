@@ -1,0 +1,23 @@
+
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:${MSSQL_TAG:-2022-latest}
+    container_name: ${MSSQL_CONTAINER_NAME:-mssql}
+    hostname: ${MSSQL_HOSTNAME:-mssql}
+    ports:
+      - "${MSSQL_PORT:-1433}:1433"
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: ${ACCEPT_EULA:-Y}
+      SA_PASSWORD: ${SA_PASSWORD:-Strong@Passw0rd}
+    volumes:
+      - mssql-data:/var/opt/mssql
+    networks:
+      - portainer-network
+
+volumes:
+  mssql-data: {}
+
+networks:
+  portainer-network:
+    external: true

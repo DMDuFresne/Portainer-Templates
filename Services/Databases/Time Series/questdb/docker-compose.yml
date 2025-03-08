@@ -1,0 +1,22 @@
+
+services:
+  questdb:
+    image: questdb/questdb:${QUESTDB_TAG:-latest}
+    container_name: ${QUESTDB_CONTAINER_NAME:-questdb}
+    hostname: ${QUESTDB_HOSTNAME:-questdb}
+    ports:
+      - "${QUESTDB_WEB_PORT:-9000}:9000"
+      - "${QUESTDB_INGEST_PORT:-9009}:9009"
+      - "${QUESTDB_POSTGRES_PORT:-8812}:8812"
+    restart: unless-stopped
+    volumes:
+      - questdb-data:/root/.questdb
+    networks:
+      - portainer-network
+
+volumes:
+  questdb-data: {}
+
+networks:
+  portainer-network:
+    external: true

@@ -1,0 +1,8 @@
+# Ignore any directory named "WIP" anywhere in the repo
+**/WIP/
+
+# Example: Ignore Docker Compose override files (commonly generated locally)
+**/docker-compose.override.yml
+
+# If you also want to ignore any additional Docker Compose variants, for example temporary ones:
+**/docker-compose.*.yml

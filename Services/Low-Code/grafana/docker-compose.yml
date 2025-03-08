@@ -1,0 +1,23 @@
+
+services:
+  grafana:
+    image: grafana/grafana:${GRAFANA_TAG:-latest}
+    container_name: ${GRAFANA_CONTAINER_NAME:-grafana}
+    hostname: ${GRAFANA_HOSTNAME:-grafana}
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: ${GF_USERS_ALLOW_SIGN_UP:-false}
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      - portainer-network
+
+volumes:
+  grafana-data: {}
+
+networks:
+  portainer-network:
+    external: true

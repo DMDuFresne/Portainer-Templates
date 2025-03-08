@@ -1,0 +1,48 @@
+
+services:
+  dgraph-zero:
+    image: dgraph/dgraph:${DGRAPH_TAG:-latest}
+    container_name: ${DGRAPH_ZERO_CONTAINER_NAME:-dgraph-zero}
+    hostname: ${DGRAPH_ZERO_HOSTNAME:-zero}
+    ports:
+      - "${ZERO_RPC_PORT:-5080}:5080"
+      - "${ZERO_HTTP_PORT:-6080}:6080"
+    restart: unless-stopped
+    command: dgraph zero --my=zero:5080
+    volumes:
+      - dgraph-zero-data:/dgraph
+    networks:
+      - portainer-network
+
+  dgraph-alpha:
+    image: dgraph/dgraph:${DGRAPH_TAG:-latest}
+    container_name: ${DGRAPH_ALPHA_CONTAINER_NAME:-dgraph-alpha}
+    hostname: ${DGRAPH_ALPHA_HOSTNAME:-alpha}
+    restart: unless-stopped
+    command: dgraph alpha --my=alpha:7080 --zero=zero:5080 --security whitelist=10.0.0.0/8,172.0.0.0/8,192.168.0.0/16,127.0.0.1
+    volumes:
+      - dgraph-alpha-data:/dgraph
+    ports:
+      - "${ALPHA_HTTP_PORT:-8080}:8080"
+      - "${ALPHA_ADMIN_PORT:-9080}:9080"
+    networks:
+      - portainer-network
+    depends_on:
+      - dgraph-zero
+
+  dgraph-ratel:
+    image: dgraph/ratel:${DGRAPH_TAG:-latest}
+    container_name: ${DGRAPH_RATEL_CONTAINER_NAME:-dgraph-ratel}
+    hostname: ${DGRAPH_RATEL_HOSTNAME:-ratel}
+    ports:
+      - "${RATEL_HTTP_PORT:-8000}:8000"
+    networks:
+      - portainer-network
+
+volumes:
+  dgraph-zero-data: {}
+  dgraph-alpha-data: {}
+
+networks:
+  portainer-network:
+    external: true

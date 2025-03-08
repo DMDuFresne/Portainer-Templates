@@ -1,0 +1,22 @@
+
+services:
+  nats:
+    image: nats:${NATS_TAG:-latest}
+    container_name: ${NATS_CONTAINER_NAME:-nats}
+    hostname: ${NATS_HOSTNAME:-nats}
+    restart: unless-stopped
+    ports:
+      - "${NATS_CLIENT_PORT:-4222}:4222"
+      - "${NATS_CLUSTER_PORT:-6222}:6222"
+      - "${NATS_MONITOR_PORT:-8222}:8222"
+    volumes:
+      - nats-data:/data
+    networks:
+      - portainer-network
+
+volumes:
+  nats-data: {}
+
+networks:
+  portainer-network:
+    external: true

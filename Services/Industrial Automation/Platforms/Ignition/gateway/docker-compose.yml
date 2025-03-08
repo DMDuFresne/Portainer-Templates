@@ -1,0 +1,28 @@
+
+services:
+  ignition:
+    image: inductiveautomation/ignition:${IGNITION_TAG:-latest}
+    container_name: ${IGNITION_CONTAINER_NAME:-ignition-gateway}
+    hostname: ${IGNITION_HOSTNAME:-ignition-gateway}
+    ports:
+      - "${IGNITION_PORT:-8088}:8088"
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-America/Chicago}
+      ACCEPT_IGNITION_EULA: ${ACCEPT_IGNITION_EULA:-Y}
+      GATEWAY_ADMIN_USERNAME: ${GATEWAY_ADMIN_USERNAME:-admin}
+      GATEWAY_ADMIN_PASSWORD: ${GATEWAY_ADMIN_PASSWORD:-password}
+      IGNITION_EDITION: ${IGNITION_EDITION:-standard}
+      IGNITION_LICENSE_KEY: ${IGNITION_LICENSE_KEY:-}
+      GATEWAY_MODULES_ENABLED: ${GATEWAY_MODULES_ENABLED:-opc-ua,perspective,web-developer}
+    volumes:
+      - ignition-gateway-data:/var/lib/ignition
+    networks:
+      - portainer-network
+
+volumes:
+  ignition-gateway-data: {}
+
+networks:
+  portainer-network:
+    external: true

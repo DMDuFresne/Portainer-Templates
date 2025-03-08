@@ -1,0 +1,26 @@
+
+services:
+  influxdb:
+    image: influxdb:${INFLUXDB_TAG:-2}
+    container_name: ${INFLUXDB_CONTAINER_NAME:-influxdb}
+    hostname: ${INFLUXDB_HOSTNAME:-influxdb}
+    ports:
+      - "${INFLUXDB_PORT:-8086}:8086"
+    restart: unless-stopped
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: ${DOCKER_INFLUXDB_INIT_MODE:-setup}
+      DOCKER_INFLUXDB_INIT_USERNAME: ${DOCKER_INFLUXDB_INIT_USERNAME:-admin}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${DOCKER_INFLUXDB_INIT_PASSWORD:-StrongPassw0rd}
+      DOCKER_INFLUXDB_INIT_ORG: ${DOCKER_INFLUXDB_INIT_ORG:-myorg}
+      DOCKER_INFLUXDB_INIT_BUCKET: ${DOCKER_INFLUXDB_INIT_BUCKET:-mybucket}
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+    networks:
+      - portainer-network
+
+volumes:
+  influxdb-data: {}
+
+networks:
+  portainer-network:
+    external: true

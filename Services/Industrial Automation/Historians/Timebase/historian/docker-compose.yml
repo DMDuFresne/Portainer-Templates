@@ -1,0 +1,22 @@
+
+services:
+  timebase-historian:
+    image: timebase/historian:${HISTORIAN_TAG:-latest}
+    container_name: ${HISTORIAN_CONTAINER_NAME:-timebase-historian}
+    hostname: ${HISTORIAN_HOSTNAME:-timebase-historian}
+    ports:
+      - "${HISTORIAN_PORT:-4511}:4511"
+    restart: unless-stopped
+    volumes:
+      - historian-data:/timebase/data
+      - historian-logs:/timebase/logs
+    networks:
+      - portainer-network
+
+volumes:
+  historian-data: {}
+  historian-logs: {}
+
+networks:
+  portainer-network:
+    external: true

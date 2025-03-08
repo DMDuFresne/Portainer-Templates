@@ -1,0 +1,24 @@
+
+services:
+  timescaledb:
+    image: timescale/timescaledb:${TIMESCALE_TAG:-latest-pg16}
+    container_name: ${TIMESCALE_CONTAINER_NAME:-timescaledb}
+    hostname: ${TIMESCALE_HOSTNAME:-timescaledb}
+    ports:
+      - "${TIMESCALE_PORT:-5432}:5432"
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-StrongPassw0rd}
+      POSTGRES_DB: ${POSTGRES_DB:-timescaledb}
+    volumes:
+      - timescaledb-data:/var/lib/postgresql/data
+    networks:
+      - portainer-network
+
+volumes:
+  timescaledb-data: {}
+
+networks:
+  portainer-network:
+    external: true

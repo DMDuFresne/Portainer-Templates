@@ -1,0 +1,82 @@
+
+services:
+
+  mosquitto:
+    image: eclipse-mosquitto:${MOSQUITTO_TAG:-latest}
+    container_name: ming-broker
+    hostname: broker
+    ports:
+      - "${MOSQUITTO_MQTT_PORT:-1883}:1883"
+    restart: unless-stopped
+    command: |
+      sh -c "
+      echo 'listener 1883 0.0.0.0
+      allow_anonymous true
+      log_type error
+      log_type warning
+      log_type notice
+      log_type information
+      persistence true
+      persistence_location /mosquitto/data/' > /mosquitto/config/mosquitto.conf &&
+      mosquitto -c /mosquitto/config/mosquitto.conf
+      "
+    volumes:
+      - ming-mosquitto-data:/mosquitto/data
+      - ming-mosquitto-log:/mosquitto/log
+    networks:
+      - ming-network
+
+  influxdb:
+    image: influxdb:${INFLUXDB_TAG:-latest}
+    container_name: ming-influxdb
+    hostname: influxdb
+    ports:
+      - "${INFLUXDB_PORT:-8086}:8086"
+    restart: unless-stopped
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: ${DOCKER_INFLUXDB_INIT_MODE:-setup}
+      DOCKER_INFLUXDB_INIT_USERNAME: ${DOCKER_INFLUXDB_INIT_USERNAME:-admin}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${DOCKER_INFLUXDB_INIT_PASSWORD:-StrongPassw0rd}
+      DOCKER_INFLUXDB_INIT_ORG: ${DOCKER_INFLUXDB_INIT_ORG:-myorg}
+      DOCKER_INFLUXDB_INIT_BUCKET: ${DOCKER_INFLUXDB_INIT_BUCKET:-mybucket}
+    volumes:
+      - ming-influxdb-data:/var/lib/influxdb2
+    networks:
+      - ming-network
+
+  nodered:
+    image: nodered/node-red:${NODE_RED_TAG:-latest}
+    container_name: ming-nodered
+    hostname: nodered
+    ports:
+      - "${NODE_RED_PORT:-1880}:1880"
+    restart: unless-stopped
+    volumes:
+      - ming-nodered-data:/data
+    networks:
+      - ming-network
+
+  grafana:
+    image: grafana/grafana:${GRAFANA_TAG:-latest}
+    container_name: ming-grafana
+    hostname: grafana
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: ${GF_USERS_ALLOW_SIGN_UP:-false}
+    volumes:
+      - ming-grafana-data:/var/lib/grafana
+    networks:
+      - ming-network
+
+volumes:
+  ming-mosquitto-data: {}
+  ming-mosquitto-log: {}
+  ming-influxdb-data: {}
+  ming-nodered-data: {}
+  ming-grafana-data: {}
+
+networks:
+  ming-network:

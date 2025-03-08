@@ -1,0 +1,28 @@
+
+services:
+  emqx:
+    image: emqx/emqx:${EMQX_TAG:-latest}
+    container_name: ${EMQX_CONTAINER_NAME:-broker}
+    hostname: ${EMQX_HOSTNAME:-broker}
+    ports:
+      - "${EMQX_MQTT_PORT:-1883}:1883"
+      - "${EMQX_WS_PORT:-8083}:8083"
+      - "${EMQX_DASHBOARD_PORT:-18083}:18083"
+    restart: unless-stopped
+    environment:
+      EMQX_ALLOW_ANONYMOUS: ${EMQX_ALLOW_ANONYMOUS:-true}
+    volumes:
+      - emqx-data:/opt/emqx/data
+      - emqx-etc:/opt/emqx/etc
+      - emqx-log:/opt/emqx/log
+    networks:
+      - portainer-network
+
+volumes:
+  emqx-data: {}
+  emqx-etc: {}
+  emqx-log: {}
+
+networks:
+  portainer-network:
+    external: true
