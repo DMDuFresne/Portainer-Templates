@@ -1,0 +1,27 @@
+
+services:
+  
+  timebase-collector:
+    image: timebase/collector:${COLLECTOR_TAG:-latest}
+    container_name: timebase-collector
+    hostname: collector
+    ports:
+      - "${COLLECTOR_PORT:-4521}:4521"
+    restart: unless-stopped
+    environment:
+      ACTIVE: false
+    volumes:
+      - timebase-collector-config:/timebase/config
+      - timebase-collector-data:/timebase/data
+      - timebase-collector-logs:/timebase/logs
+    networks:
+      - timebase-network
+
+volumes:
+  timebase-collector-config: {}
+  timebase-collector-data: {}
+  timebase-collector-logs: {}
+
+networks:
+  timebase-network:
+    external: true

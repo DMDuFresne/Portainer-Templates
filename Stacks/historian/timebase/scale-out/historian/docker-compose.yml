@@ -1,0 +1,38 @@
+
+services:
+
+  timebase-historian:
+    image: timebase/historian:${HISTORIAN_TAG:-latest}
+    container_name: timebase-historian
+    hostname: historian
+    ports:
+      - "${HISTORIAN_PORT:-4511}:4511"
+    restart: unless-stopped
+    volumes:
+      - timebase-historian-data:/timebase/data
+      - timebase-historian-logs:/timebase/logs
+    networks:
+      - timebase-network
+
+  timebase-explorer:
+    image: timebase/explorer:${EXPLORER_TAG:-latest}
+    container_name: timebase-explorer
+    hostname: explorer
+    ports:
+      - "${EXPLORER_PORT:-4531}:4531"
+    restart: unless-stopped
+    volumes:
+      - timebase-explorer-config:/timebase/config
+      - timebase-explorer-logs:/timebase/logs
+    networks:
+      - timebase-network
+
+volumes:
+  timebase-historian-data: {}
+  timebase-historian-logs: {}
+  timebase-explorer-config: {}
+  timebase-explorer-logs: {}
+
+networks:
+  timebase-network:
+    external: true
